@@ -1,0 +1,11 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - echo installing dependencies...
+      - go mod download
+  build:
+    commands:
+      - Running unit tests...
+      - cd tests
+      - go test -v
