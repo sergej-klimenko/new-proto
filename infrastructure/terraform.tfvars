@@ -1,10 +1,12 @@
-aws_region        = "us-east-2"
-aws_access_key    = "your aws access key"
-aws_secret_key    = "your aws secret key"
-
+name               = "golang-api"
+environment        = "staging"
+region             = "us-east-2"
+github_auth_token  = "test"
 availability_zones = ["us-east-2a", "us-east-2c"]
 public_subnets     = ["10.10.100.0/24", "10.10.101.0/24"]
 private_subnets    = ["10.10.0.0/24", "10.10.1.0/24"]
-
-app_name        = "golang-api"
-app_environment = "staging"
+port               = 8888
+task_memory        = 256
+task_cpu           = 128
+github_repo        = "sdfsd"
+gitub_owner        = "sdfds"

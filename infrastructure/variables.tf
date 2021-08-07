@@ -1,13 +1,3 @@
-variable "aws_access_key" {
-  type        = string
-  description = "AWS Access Key"
-}
-
-variable "aws_secret_key" {
-  type        = string
-  description = "AWS Secret Key"
-}
-
 variable "region" {
   type        = string
   description = "AWS Region"
@@ -23,7 +13,6 @@ variable "environment" {
   description = "Application Environment"
 }
 
-
 variable "public_subnets" {
   description = "List of public subnets"
 }
@@ -35,3 +24,34 @@ variable "private_subnets" {
 variable "availability_zones" {
   description = "List of availability zones"
 }
+
+variable "github_owner" {
+  description = "GitHub repository owner"
+  default     = "stojce"
+}
+variable "github_token" {
+  description = "GitHub repository owner"
+  default     = "stojce"
+}
+
+variable "github_repo" {
+  description = "GitHub repository name"
+  default     = "static-web-example"
+}
+
+variable "task_memory" {
+  description = "Task definition memory"
+  default     = 256
+}
+
+variable "task_cpu" {
+  description = "Task definition CPU"
+  default     = 128
+}
+
+variable "port" {
+  description = "Task definition memory"
+  default     = 8888
+}
+
+

@@ -1,14 +1,13 @@
 terraform {
   required_providers {
     aws = {
-      source = "hashicorp/aws"
-      version "3.53.0"
+      source  = "hashicorp/aws"
+      version = "3.52.0"
     }
   }
 }
 
 provider "aws" {
-  region = var.region
-  access_key = "<your_aws_access_key>"
-  secret_key = "<your_aws_secret_key>"
+  region  = var.region
+  profile = "medium-golang-terraform"
 }
