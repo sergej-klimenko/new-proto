@@ -10,6 +10,7 @@ type TaskRepository interface {
 	Create(task models.Task) int
 	UpdateTask(task models.Task) error
 	GetById(id int) (models.Task, error)
+	GetAll() []models.Task
 	CompleteTask(id int) error
 }
 
@@ -29,6 +30,10 @@ func (t *taskRepository) Create(task models.Task) int {
 	task.ID = t.idCounter
 	t.taskCollection = append(t.taskCollection, task)
 	return t.idCounter
+}
+
+func (t *taskRepository) GetAll() []models.Task {
+	return t.taskCollection
 }
 
 func (t *taskRepository) GetById(id int) (models.Task, error) {

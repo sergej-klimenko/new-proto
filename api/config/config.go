@@ -8,6 +8,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+var ErrInvalidConfiguration = errors.New("invalid configuration")
+
 type Settings struct {
 	Environment string ` mapstructure:"ENVIRONMENT"`
 	list        map[string]string
@@ -18,8 +20,6 @@ var settings = &Settings{
 		"Environment": "",
 	},
 }
-
-var ErrInvalidConfiguration = errors.New("invalid configuration")
 
 func Load() error {
 	settingsFile, err := ioutil.ReadFile("settings.json")

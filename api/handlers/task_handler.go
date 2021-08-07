@@ -22,6 +22,7 @@ func NewTaskHandler(taskSvc services.TaskService) http.Handler {
 	r := chi.NewRouter()
 	r.Post("/", handler.createTask)
 	r.Get("/{id}", handler.getTask)
+	r.Get("/", handler.getAllTasks)
 	r.Put("/{id}", handler.updateTask)
 	r.Post("/{id}/complete", handler.completeTask)
 	return r
@@ -37,6 +38,13 @@ func (h taskHandler) createTask(w http.ResponseWriter, r *http.Request) {
 	newTaskId := h.TaskSvc.CreateTask(r.Context(), task)
 
 	utils.WriteResponse(w, &models.CreateTaskResponse{Id: newTaskId}, 200)
+}
+
+func (h taskHandler) getAllTasks(w http.ResponseWriter, r *http.Request) {
+
+	tasks := h.TaskSvc.GetAllTasks(r.Context())
+
+	utils.WriteResponse(w, &tasks, 200)
 }
 
 func (h taskHandler) getTask(w http.ResponseWriter, r *http.Request) {

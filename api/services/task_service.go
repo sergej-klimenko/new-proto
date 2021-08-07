@@ -12,6 +12,7 @@ type TaskService interface {
 	CreateTask(ctx context.Context, task *models.CreateTaskRequest) int
 	UpdateTask(ctx context.Context, task *models.UpdateTaskRequest) *models.Error
 	GetTask(ctx context.Context, id int) (*models.Task, *models.Error)
+	GetAllTasks(ctx context.Context) []models.Task
 	CompleteTask(ctx context.Context, id int) *models.Error
 }
 
@@ -20,12 +21,12 @@ type taskService struct {
 }
 
 func NewTaskService(taskRepo repository.TaskRepository) TaskService {
-	return taskService{
+	return &taskService{
 		taskRepo: taskRepo,
 	}
 }
 
-func (t taskService) CreateTask(ctx context.Context, task *models.CreateTaskRequest) int {
+func (t *taskService) CreateTask(ctx context.Context, task *models.CreateTaskRequest) int {
 	newTask := models.Task{
 		Description: strings.TrimSpace(task.Description),
 		Title:       strings.TrimSpace(task.Title),
@@ -35,7 +36,11 @@ func (t taskService) CreateTask(ctx context.Context, task *models.CreateTaskRequ
 	return id
 }
 
-func (t taskService) GetTask(ctx context.Context, id int) (*models.Task, *models.Error) {
+func (t *taskService) GetAllTasks(ctx context.Context) []models.Task {
+	return t.taskRepo.GetAll()
+}
+
+func (t *taskService) GetTask(ctx context.Context, id int) (*models.Task, *models.Error) {
 
 	task, err := t.taskRepo.GetById(id)
 
@@ -50,7 +55,7 @@ func (t taskService) GetTask(ctx context.Context, id int) (*models.Task, *models
 	return &task, nil
 }
 
-func (t taskService) UpdateTask(ctx context.Context, task *models.UpdateTaskRequest) *models.Error {
+func (t *taskService) UpdateTask(ctx context.Context, task *models.UpdateTaskRequest) *models.Error {
 
 	taskFound, err := t.taskRepo.GetById(task.Id)
 	if err != nil {
@@ -74,7 +79,7 @@ func (t taskService) UpdateTask(ctx context.Context, task *models.UpdateTaskRequ
 	return nil
 }
 
-func (t taskService) CompleteTask(ctx context.Context, id int) *models.Error {
+func (t *taskService) CompleteTask(ctx context.Context, id int) *models.Error {
 
 	task, err := t.taskRepo.GetById(id)
 
