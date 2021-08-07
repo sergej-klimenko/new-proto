@@ -44,7 +44,7 @@ func (h taskHandler) getAllTasks(w http.ResponseWriter, r *http.Request) {
 
 	tasks := h.TaskSvc.GetAllTasks(r.Context())
 
-	utils.WriteResponse(w, &tasks, 200)
+	utils.WriteResponse(w, tasks, 200)
 }
 
 func (h taskHandler) getTask(w http.ResponseWriter, r *http.Request) {
