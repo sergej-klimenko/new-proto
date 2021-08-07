@@ -10,36 +10,35 @@ data "aws_iam_policy_document" "assume_role_policy" {
 }
 
 resource "aws_iam_role" "ecsTaskExecutionRole" {
-  name               = "${var.app_name}-execution-task-role"
+  name               = "${var.service}-execution-task-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
   tags = {
-    Name        = "${var.app_name}-iam-role"
-    Environment = var.app_environment
+    Name        = "${var.service}-iam-role"
+    Environment = var.environment
   }
 }
 
 resource "aws_ecr_repository" "aws-ecr" {
-  name = "${var.app_name}-${var.app_environment}-ecr"
+  name = "${var.service}-${var.environment}-ecr"
   tags = {
-    Name        = "${var.app_name}-ecr"
-    Environment = var.app_environment
+    Name        = "${var.service}-ecr"
+    Environment = var.environment
   }
 }
 
 resource "aws_ecs_cluster" "aws-ecs-cluster" {
-  name = "${var.app_name}-${var.app_environment}-cluster"
+  name = "${var.service}-${var.environment}-cluster"
   tags = {
-    Name        = "${var.app_name}-ecs"
-    Environment = var.app_environment
+    Name        = "${var.service}-ecs"
+    Environment = var.environment
   }
 }
 
 resource "aws_cloudwatch_log_group" "log-group" {
-  name = "${var.app_name}-${var.app_environment}-logs"
-
+  name = "${var.service}-${var.environment}-logs"
   tags = {
-    Application = var.app_name
-    Environment = var.app_environment
+    Application = var.service
+    Environment = var.environment
   }
 }
 
@@ -48,12 +47,12 @@ data "template_file" "env_vars" {
 }
 
 resource "aws_ecs_task_definition" "aws-ecs-task" {
-  family = "${var.app_name}-task"
+  family = "${var.service}-task"
 
   container_definitions = <<DEFINITION
   [
     {
-      "name": "${var.app_name}-${var.app_environment}-container",
+      "name": "${var.service}-${var.environment}-container",
       "image": "${aws_ecr_repository.aws-ecr.repository_url}:latest",
       "entryPoint": [],
       "environment": ${data.template_file.env_vars.rendered},
@@ -63,7 +62,7 @@ resource "aws_ecs_task_definition" "aws-ecs-task" {
         "options": {
           "awslogs-group": "${aws_cloudwatch_log_group.log-group.id}",
           "awslogs-region": "${var.aws_region}",
-          "awslogs-stream-prefix": "${var.app_name}-${var.app_environment}"
+          "awslogs-stream-prefix": "${var.service}-${var.environment}"
         }
       },
       "portMappings": [
@@ -87,8 +86,8 @@ resource "aws_ecs_task_definition" "aws-ecs-task" {
   task_role_arn            = aws_iam_role.ecsTaskExecutionRole.arn
 
   tags = {
-    Name        = "${var.app_name}-ecs-td"
-    Environment = var.app_environment
+    Name        = "${var.service}-ecs-td"
+    Environment = var.environment
   }
 }
 
@@ -97,7 +96,7 @@ data "aws_ecs_task_definition" "main" {
 }
 
 resource "aws_ecs_service" "aws-ecs-service" {
-  name                 = "${var.app_name}-${var.app_environment}-ecs-service"
+  name                 = "${var.service}-${var.environment}-ecs-service"
   cluster              = aws_ecs_cluster.aws-ecs-cluster.id
   task_definition      = "${aws_ecs_task_definition.aws-ecs-task.family}:${max(aws_ecs_task_definition.aws-ecs-task.revision, data.aws_ecs_task_definition.main.revision)}"
   launch_type          = "FARGATE"
@@ -116,7 +115,7 @@ resource "aws_ecs_service" "aws-ecs-service" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.target_group.arn
-    container_name   = "${var.app_name}-${var.app_environment}-container"
+    container_name   = "${var.service}-${var.environment}-container"
     container_port   = 8080
   }
 
@@ -142,8 +141,8 @@ resource "aws_security_group" "service_security_group" {
   }
 
   tags = {
-    Name        = "${var.app_name}-service-sg"
-    Environment = var.app_environment
+    Name        = "${var.service}-service-sg"
+    Environment = var.environment
   }
 }
 

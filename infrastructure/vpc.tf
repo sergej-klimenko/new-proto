@@ -3,16 +3,16 @@ resource "aws_vpc" "aws-vpc" {
   enable_dns_hostnames = true
   enable_dns_support   = true
   tags = {
-    Name        = "${var.app_name}-vpc"
-    Environment = var.app_environment
+    Name        = "${var.service}-vpc"
+    Environment = var.environment
   }
 }
 
 resource "aws_internet_gateway" "aws-igw" {
   vpc_id = aws_vpc.aws-vpc.id
   tags = {
-    Name        = "${var.app_name}-igw"
-    Environment = var.app_environment
+    Name        = "${var.service}-igw"
+    Environment = var.environment
   }
 }
 
@@ -23,8 +23,8 @@ resource "aws_subnet" "private" {
   availability_zone = element(var.availability_zones, count.index)
 
   tags = {
-    Name        = "${var.app_name}-private-subnet-${count.index + 1}"
-    Environment = var.app_environment
+    Name        = "${var.service}-private-subnet-${count.index + 1}"
+    Environment = var.environment
   }
 }
 
@@ -36,8 +36,8 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name        = "${var.app_name}-public-subnet-${count.index + 1}"
-    Environment = var.app_environment
+    Name        = "${var.service}-public-subnet-${count.index + 1}"
+    Environment = var.environment
   }
 }
 
@@ -45,8 +45,8 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.aws-vpc.id
 
   tags = {
-    Name        = "${var.app_name}-routing-table-public"
-    Environment = var.app_environment
+    Name        = "${var.service}-routing-table-public"
+    Environment = var.environment
   }
 }
 

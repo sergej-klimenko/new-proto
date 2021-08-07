@@ -1,15 +1,15 @@
 # alb.tf | Load Balancer Configuration
 
 resource "aws_alb" "application_load_balancer" {
-  name               = "${var.app_name}-${var.app_environment}-alb"
+  name               = "${var.service}-${var.environment}-alb"
   internal           = false
   load_balancer_type = "application"
   subnets            = aws_subnet.public.*.id
   security_groups    = [aws_security_group.load_balancer_security_group.id]
 
   tags = {
-    Name        = "${var.app_name}-alb"
-    Environment = var.app_environment
+    Name        = "${var.service}-alb"
+    Environment = var.environment
   }
 }
 
@@ -40,13 +40,13 @@ resource "aws_security_group" "load_balancer_security_group" {
     ipv6_cidr_blocks = ["::/0"]
   }
   tags = {
-    Name        = "${var.app_name}-sg"
-    Environment = var.app_environment
+    Name        = "${var.service}-sg"
+    Environment = var.environment
   }
 }
 
 resource "aws_lb_target_group" "target_group" {
-  name        = "${var.app_name}-${var.app_environment}-tg"
+  name        = "${var.service}-${var.environment}-tg"
   port        = 80
   protocol    = "HTTP"
   target_type = "ip"
@@ -63,8 +63,8 @@ resource "aws_lb_target_group" "target_group" {
   }
 
   tags = {
-    Name        = "${var.app_name}-lb-tg"
-    Environment = var.app_environment
+    Name        = "${var.service}-lb-tg"
+    Environment = var.environment
   }
 }
 
