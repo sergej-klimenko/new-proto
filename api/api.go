@@ -6,24 +6,18 @@ import (
 	"cloud-native/api/services"
 	"net/http"
 
-	"go.mongodb.org/mongo-driver/mongo"
-
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-type Dependencies struct {
-	MongoClient *mongo.Client
-}
-
-func New(deps Dependencies) *http.Server {
+func New() *http.Server {
 	r := chi.NewRouter()
 
 	// global middlware
 	r.Use(middleware.Recoverer)
 
 	// repositories
-	taskRepo := repository.NewTaskRepository(deps.MongoClient)
+	taskRepo := repository.NewTaskRepository()
 
 	//services
 	taskSvc := services.NewTaskService(taskRepo)

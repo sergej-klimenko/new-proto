@@ -8,8 +8,6 @@ import (
 	"strings"
 	"testing"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -23,9 +21,7 @@ func init() {
 }
 
 func TestCreateTask_BadRequestBody(t *testing.T) {
-	id := primitive.NewObjectID()
 	req := httptest.NewRequest("POST", "/", strings.NewReader(""))
-	req.Header.Set("userId", id.Hex())
 	rec := httptest.NewRecorder()
 
 	taskHandler.ServeHTTP(rec, req)

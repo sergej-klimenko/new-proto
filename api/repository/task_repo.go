@@ -4,7 +4,6 @@ import (
 	"cloud-native/api/models"
 
 	"github.com/pkg/errors"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type TaskRepository interface {
@@ -21,7 +20,7 @@ type taskRepository struct {
 
 var ErrTaskNotFound = errors.New("task not found")
 
-func NewTaskRepository(mongo *mongo.Client) TaskRepository {
+func NewTaskRepository() TaskRepository {
 	return &taskRepository{}
 }
 
