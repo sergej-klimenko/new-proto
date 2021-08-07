@@ -1,12 +1,14 @@
-name               = "golang-api"
-environment        = "staging"
-region             = "us-east-2"
-github_auth_token  = "test"
-availability_zones = ["us-east-2a", "us-east-2c"]
+aws_region        = "us-east-1"
+aws_access_key    = "aws_access_key"
+aws_secret_key    = "aws_secret_key"
+aws_key_pair_name = "key-pair-name"
+
+availability_zones = ["us-east-1a", "us-east-1b"]
 public_subnets     = ["10.10.100.0/24", "10.10.101.0/24"]
 private_subnets    = ["10.10.0.0/24", "10.10.1.0/24"]
-port               = 8888
-task_memory        = 256
-task_cpu           = 128
-github_repo        = "sdfsd"
-gitub_owner        = "sdfds"
+
+app_name        = "node-js-app"
+app_environment = "production"
+
+database_name     = "nodejsdatabase"
+database_password = "database-password"
