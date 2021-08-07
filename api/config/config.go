@@ -22,9 +22,12 @@ var settings = &Settings{
 var ErrInvalidConfiguration = errors.New("invalid configuration")
 
 func Load() error {
-	settingsFile, _ := ioutil.ReadFile("settings.json")
-	if err := json.Unmarshal(settingsFile, settings); err != nil {
-		return errors.Wrap(err, "error reading configuration file.")
+	settingsFile, err := ioutil.ReadFile("settings.json")
+
+	if err == nil {
+		if err := json.Unmarshal(settingsFile, settings); err != nil {
+			return errors.Wrap(err, "error reading configuration file.")
+		}
 	}
 
 	if os.Getenv("ENVIRONMENT") != "" {

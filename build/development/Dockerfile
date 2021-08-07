@@ -8,6 +8,6 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o /bu
 FROM alpine:3.9.4
 WORKDIR /app
 COPY --from=build build/main /app/
-ENV ENVIRONMENT=development
+ENV ENVIRONMENT=development-docker
 EXPOSE 8888
 ENTRYPOINT ["./main"]
