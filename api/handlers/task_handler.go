@@ -5,6 +5,7 @@ import (
 	"cloud-native/api/services"
 	"cloud-native/api/utils"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -39,15 +40,14 @@ func (h taskHandler) createTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h taskHandler) getTask(w http.ResponseWriter, r *http.Request) {
-	taskId := chi.URLParam(r, "id")
+	id, err := getTaskId(r)
 
-	if taskId == "" {
-		err := &models.Error{Code: http.StatusBadRequest, Message: "invalid taskId"}
+	if err != nil {
 		utils.WriteErrorResponse(w, err)
 		return
 	}
 
-	task, err := h.TaskSvc.GetTask(r.Context(), taskId)
+	task, err := h.TaskSvc.GetTask(r.Context(), id)
 
 	if err != nil {
 		utils.WriteErrorResponse(w, err)
@@ -75,15 +75,14 @@ func (h taskHandler) updateTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h taskHandler) completeTask(w http.ResponseWriter, r *http.Request) {
-	taskId := chi.URLParam(r, "id")
+	id, err := getTaskId(r)
 
-	if taskId == "" {
-		err := &models.Error{Code: http.StatusBadRequest, Message: "invalid taskId"}
+	if err != nil {
 		utils.WriteErrorResponse(w, err)
 		return
 	}
 
-	err := h.TaskSvc.CompleteTask(r.Context(), taskId)
+	err = h.TaskSvc.CompleteTask(r.Context(), id)
 
 	if err != nil {
 		utils.WriteErrorResponse(w, err)
@@ -91,4 +90,19 @@ func (h taskHandler) completeTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.WriteResponse(w, nil, http.StatusNoContent)
+}
+
+func getTaskId(r *http.Request) (int, *models.Error) {
+	taskId := chi.URLParam(r, "id")
+
+	if taskId == "" {
+		return 0, &models.Error{Code: http.StatusBadRequest, Message: "invalid task id"}
+	}
+	id, err := strconv.Atoi(taskId)
+
+	if err != nil {
+		return 0, &models.Error{Code: http.StatusBadRequest, Message: "invalid task id"}
+
+	}
+	return id, nil
 }

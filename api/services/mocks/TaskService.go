@@ -15,11 +15,11 @@ type TaskService struct {
 }
 
 // CompleteTask provides a mock function with given fields: ctx, id
-func (_m *TaskService) CompleteTask(ctx context.Context, id string) *models.Error {
+func (_m *TaskService) CompleteTask(ctx context.Context, id int) *models.Error {
 	ret := _m.Called(ctx, id)
 
 	var r0 *models.Error
-	if rf, ok := ret.Get(0).(func(context.Context, string) *models.Error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int) *models.Error); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
@@ -45,11 +45,11 @@ func (_m *TaskService) CreateTask(ctx context.Context, task *models.CreateTaskRe
 }
 
 // GetTask provides a mock function with given fields: ctx, id
-func (_m *TaskService) GetTask(ctx context.Context, id string) (*models.Task, *models.Error) {
+func (_m *TaskService) GetTask(ctx context.Context, id int) (*models.Task, *models.Error) {
 	ret := _m.Called(ctx, id)
 
 	var r0 *models.Task
-	if rf, ok := ret.Get(0).(func(context.Context, string) *models.Task); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int) *models.Task); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
@@ -58,7 +58,7 @@ func (_m *TaskService) GetTask(ctx context.Context, id string) (*models.Task, *m
 	}
 
 	var r1 *models.Error
-	if rf, ok := ret.Get(1).(func(context.Context, string) *models.Error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, int) *models.Error); ok {
 		r1 = rf(ctx, id)
 	} else {
 		if ret.Get(1) != nil {
