@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"log"
 	"new-proto/api"
+	"new-proto/api/config"
 )
 
 func main() {
 
-	if err := api.LoadConfiguration(); err != nil {
+	if err := config.Load(); err != nil {
 		log.Fatalf("\n%+v\n", err)
 	}
 

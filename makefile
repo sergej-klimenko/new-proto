@@ -1,9 +1,9 @@
 run:
-	go run main.go
+	ENVIRONMENT=docker go run main.go
 
 build-local:
-	docker build -t new-proto-dev .
-	docker run 8888:8888 new-proto-dev
+	docker build -f build/development/Dockerfile  -t new-proto-dev:latest .
+	docker run -p 8888:8888 new-proto-dev
 
 mockgen:
 	cd api/services && mockery --all

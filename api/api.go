@@ -25,6 +25,7 @@ func New() *http.Server {
 	// routes
 	r.Route("/api/v1", func(v1 chi.Router) {
 		v1.Mount("/tasks", handlers.NewTaskHandler(taskSvc))
+		v1.Mount("/env", handlers.NewEnvHandler())
 	})
 
 	return &http.Server{
