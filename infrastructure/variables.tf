@@ -45,7 +45,6 @@ variable "task_memory" {
   description = "Task Definition Memory"
   default     = 256
 }
-
 variable "port" {
   description = "Service port"
 }

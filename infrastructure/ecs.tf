@@ -10,59 +10,63 @@ data "aws_iam_policy_document" "assume_role_policy" {
 }
 
 resource "aws_iam_role" "ecsTaskExecutionRole" {
-  name               = "${var.service}-execution-task-role"
+  name               = "${var.service}-${var.environment}-execution-task-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
   tags = {
-    Name        = "${var.service}-iam-role"
+    Name        = "${var.service}-${var.environment}-iam-role"
     Environment = var.environment
   }
 }
 
 resource "aws_ecr_repository" "aws-ecr" {
-  name = "${var.service}-${var.environment}-ecr"
+  name = "${var.service}-${var.environment}-${var.environment}-ecr"
   tags = {
-    Name        = "${var.service}-ecr"
+    Name        = "${var.service}-${var.environment}-ecr"
     Environment = var.environment
   }
 }
 
 resource "aws_ecs_cluster" "aws-ecs-cluster" {
-  name = "${var.service}-${var.environment}-cluster"
+  name = "${var.service}-${var.environment}-${var.environment}-cluster"
   tags = {
-    Name        = "${var.service}-ecs"
+    Name        = "${var.service}-${var.environment}-ecs"
     Environment = var.environment
   }
 }
 
 resource "aws_cloudwatch_log_group" "log-group" {
-  name = "${var.service}-${var.environment}-logs"
+  name = "${var.service}-${var.environment}-${var.environment}-logs"
   tags = {
     Application = var.service
     Environment = var.environment
   }
 }
 
-data "template_file" "env_vars" {
-  template = file("env_vars.json")
-}
-
-resource "aws_ecs_task_definition" "aws-ecs-task" {
-  family = "${var.service}-task"
-
+resource "aws_ecs_task_definition" "task-definition" {
+  family                = "${var.service}-${var.environment}-task"
   container_definitions = <<DEFINITION
   [
     {
-      "name": "${var.service}-${var.environment}-container",
+      "name": "${var.service}-${var.environment}-${var.environment}-container",
       "image": "${aws_ecr_repository.aws-ecr.repository_url}:latest",
       "entryPoint": [],
-      "environment": ${data.template_file.env_vars.rendered},
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "${var.port}"
+        },
+        {
+          "name" : "ENVIRONMENT",
+          "value": "${var.environment}"
+        }
+      ],
       "essential": true,
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "${aws_cloudwatch_log_group.log-group.id}",
           "awslogs-region": "${var.aws_region}",
-          "awslogs-stream-prefix": "${var.service}-${var.environment}"
+          "awslogs-stream-prefix": "${var.service}-${var.environment}-${var.environment}"
         }
       },
       "portMappings": [
@@ -80,28 +84,24 @@ resource "aws_ecs_task_definition" "aws-ecs-task" {
 
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  memory                   = "512"
-  cpu                      = "256"
+  memory                   = var.task_memory
+  cpu                      = var.task_cpu
   execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
   task_role_arn            = aws_iam_role.ecsTaskExecutionRole.arn
 
   tags = {
-    Name        = "${var.service}-ecs-td"
+    Name        = "${var.service}-${var.environment}-ecs-td"
     Environment = var.environment
   }
 }
 
-data "aws_ecs_task_definition" "main" {
-  task_definition = aws_ecs_task_definition.aws-ecs-task.family
-}
-
 resource "aws_ecs_service" "aws-ecs-service" {
-  name                 = "${var.service}-${var.environment}-ecs-service"
+  name                 = "${var.service}-${var.environment}-${var.environment}-ecs-service"
   cluster              = aws_ecs_cluster.aws-ecs-cluster.id
-  task_definition      = "${aws_ecs_task_definition.aws-ecs-task.family}:${max(aws_ecs_task_definition.aws-ecs-task.revision, data.aws_ecs_task_definition.main.revision)}"
+  task_definition      = aws_ecs_task_definition.task-definition.id
   launch_type          = "FARGATE"
   scheduling_strategy  = "REPLICA"
-  desired_count        = 1
+  desired_count        = 2
   force_new_deployment = true
 
   network_configuration {
@@ -115,7 +115,7 @@ resource "aws_ecs_service" "aws-ecs-service" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.target_group.arn
-    container_name   = "${var.service}-${var.environment}-container"
+    container_name   = "${var.service}-${var.environment}-${var.environment}-container"
     container_port   = 8080
   }
 
@@ -123,7 +123,7 @@ resource "aws_ecs_service" "aws-ecs-service" {
 }
 
 resource "aws_security_group" "service_security_group" {
-  vpc_id = aws_vpc.aws-vpc.id
+  vpc_id = aws_vpc.vpc.id
 
   ingress {
     from_port       = 0
@@ -141,8 +141,7 @@ resource "aws_security_group" "service_security_group" {
   }
 
   tags = {
-    Name        = "${var.service}-service-sg"
-    Environment = var.environment
+    Name = "${var.service}-${var.environment}-service-sg"
   }
 }
 
