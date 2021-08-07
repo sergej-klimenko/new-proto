@@ -2,94 +2,61 @@ package repository
 
 import (
 	"cloud-native/api/models"
-	"context"
 
 	"github.com/pkg/errors"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type TaskRepository interface {
-	Create(task *models.Task) error
-	UpdateTask(task *models.Task) error
-	GetById(id string) (*models.Task, error)
-	CompleteTask(id string) error
+	Create(task models.Task) int
+	UpdateTask(task models.Task) error
+	GetById(id int) (models.Task, error)
+	CompleteTask(id int) error
 }
 
 type taskRepository struct {
-	taskCollection *mongo.Collection
-	ctx            context.Context
+	idCounter      int
+	taskCollection []models.Task
 }
+
+var ErrTaskNotFound = errors.New("task not found")
 
 func NewTaskRepository(mongo *mongo.Client) TaskRepository {
-	taskCollection := mongo.Database("herlo").Collection("tasks")
-	return &taskRepository{
-		taskCollection: taskCollection,
-		ctx:            context.TODO(),
-	}
+	return &taskRepository{}
 }
 
-func (t taskRepository) Create(task *models.Task) error {
-	_, err := t.taskCollection.InsertOne(t.ctx, task)
-	if err != nil {
-		return errors.Wrap(err, "taskRepo.Create")
-	}
-	return nil
+func (t taskRepository) Create(task models.Task) int {
+	t.idCounter++
+	task.ID = t.idCounter
+	t.taskCollection = append(t.taskCollection, task)
+	return t.idCounter
 }
 
-func (t taskRepository) GetById(id string) (*models.Task, error) {
-	taskFound := &models.Task{}
-
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, errors.Wrap(err, "taskRepo.getById")
-	}
-
-	filter := bson.M{"_id": objectId}
-	if err := t.taskCollection.FindOne(t.ctx, filter).Decode(taskFound); err != nil {
-		if err == mongo.ErrNoDocuments {
-			return nil, nil
+func (t taskRepository) GetById(id int) (models.Task, error) {
+	for _, v := range t.taskCollection {
+		if v.ID == id {
+			return v, nil
 		}
-		return nil, errors.Wrap(err, "taskRepo.GetByIf")
 	}
-
-	return taskFound, nil
+	return models.Task{}, ErrTaskNotFound
 }
 
-func (t taskRepository) UpdateTask(task *models.Task) error {
-	filter := bson.M{"_id": task.ID}
-	update := bson.M{
-		"$set": bson.M{
-			"userId":      task.UserId,
-			"description": task.Description,
-			"title":       task.Title,
-		},
+func (t taskRepository) UpdateTask(task models.Task) error {
+	for i, v := range t.taskCollection {
+		if v.ID == task.ID {
+			t.taskCollection[i] = task
+			return nil
+		}
 	}
-	_, err := t.taskCollection.UpdateOne(t.ctx, filter, update)
-	if err != nil {
-		return errors.Wrap(err, "taskRepo.CompleteTask")
-	}
-	return nil
+	return ErrTaskNotFound
 }
 
-func (t taskRepository) CompleteTask(id string) error {
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return errors.Wrap(err, "taskRepo.CompleteTask")
+func (t taskRepository) CompleteTask(id int) error {
+	for i, v := range t.taskCollection {
+		if v.ID == id {
+			t.taskCollection[i].Complete = true
+			return nil
+		}
 	}
-
-	filter := bson.M{"_id": objectId}
-	update := bson.M{
-		"$set": bson.M{
-			"complete": true,
-		}}
-
-	_, err = t.taskCollection.UpdateOne(t.ctx, filter, update)
-
-	if err != nil {
-		return errors.Wrap(err, "taskRepo.CompleteTask")
-	}
-
-	return nil
+	return ErrTaskNotFound
 }

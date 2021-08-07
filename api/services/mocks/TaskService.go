@@ -31,26 +31,17 @@ func (_m *TaskService) CompleteTask(ctx context.Context, id string) *models.Erro
 }
 
 // CreateTask provides a mock function with given fields: ctx, task
-func (_m *TaskService) CreateTask(ctx context.Context, task *models.CreateTaskRequest) (string, *models.Error) {
+func (_m *TaskService) CreateTask(ctx context.Context, task *models.CreateTaskRequest) int {
 	ret := _m.Called(ctx, task)
 
-	var r0 string
-	if rf, ok := ret.Get(0).(func(context.Context, *models.CreateTaskRequest) string); ok {
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, *models.CreateTaskRequest) int); ok {
 		r0 = rf(ctx, task)
 	} else {
-		r0 = ret.Get(0).(string)
+		r0 = ret.Get(0).(int)
 	}
 
-	var r1 *models.Error
-	if rf, ok := ret.Get(1).(func(context.Context, *models.CreateTaskRequest) *models.Error); ok {
-		r1 = rf(ctx, task)
-	} else {
-		if ret.Get(1) != nil {
-			r1 = ret.Get(1).(*models.Error)
-		}
-	}
-
-	return r0, r1
+	return r0
 }
 
 // GetTask provides a mock function with given fields: ctx, id

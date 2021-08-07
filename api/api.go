@@ -23,16 +23,13 @@ func New(deps Dependencies) *http.Server {
 	r.Use(middleware.Recoverer)
 
 	// repositories
-	userRepo := repository.NewUserRepository(deps.MongoClient)
 	taskRepo := repository.NewTaskRepository(deps.MongoClient)
 
 	//services
-	userSvc := services.NewUserService(userRepo)
 	taskSvc := services.NewTaskService(taskRepo)
 
 	// routes
 	r.Route("/api/v1", func(v1 chi.Router) {
-		v1.Mount("/users", handlers.NewUserHandler(userSvc))
 		v1.Mount("/tasks", handlers.NewTaskHandler(taskSvc))
 	})
 

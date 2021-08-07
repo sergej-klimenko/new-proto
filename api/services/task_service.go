@@ -1,19 +1,15 @@
 package services
 
 import (
-	"cloud-native/api/middlewares"
 	"cloud-native/api/models"
 	"cloud-native/api/repository"
 	"context"
-	"errors"
 	"net/http"
 	"strings"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type TaskService interface {
-	CreateTask(ctx context.Context, task *models.CreateTaskRequest) (string, *models.Error)
+	CreateTask(ctx context.Context, task *models.CreateTaskRequest) int
 	UpdateTask(ctx context.Context, task *models.UpdateTaskRequest) *models.Error
 	GetTask(ctx context.Context, id string) (*models.Task, *models.Error)
 	CompleteTask(ctx context.Context, id string) *models.Error
@@ -29,43 +25,17 @@ func NewTaskService(taskRepo repository.TaskRepository) TaskService {
 	}
 }
 
-func (t taskService) CreateTask(ctx context.Context, task *models.CreateTaskRequest) (string, *models.Error) {
-	activeUser, err := GetActiveUser(ctx)
-
-	if err != nil {
-		return "", &models.Error{
-			Code:    http.StatusUnauthorized,
-			Message: "unauthorized",
-		}
-	}
-
-	newTask := &models.Task{
-		ID:          primitive.NewObjectID(),
-		UserId:      activeUser,
+func (t taskService) CreateTask(ctx context.Context, task *models.CreateTaskRequest) int {
+	newTask := models.Task{
 		Description: strings.TrimSpace(task.Description),
 		Title:       strings.TrimSpace(task.Title),
 		Complete:    false,
 	}
-
-	if err := t.taskRepo.Create(newTask); err != nil {
-		return "", &models.Error{
-			Code:    http.StatusInternalServerError,
-			Message: "could not create task",
-			Error:   err,
-		}
-	}
-
-	return newTask.ID.Hex(), nil
+	id := t.taskRepo.Create(newTask)
+	return id
 }
 
 func (t taskService) GetTask(ctx context.Context, id string) (*models.Task, *models.Error) {
-	activeUser, err := GetActiveUser(ctx)
-	if err != nil {
-		return nil, &models.Error{
-			Code:    http.StatusUnauthorized,
-			Message: "unauthorized",
-		}
-	}
 
 	task, err := t.taskRepo.GetById(id)
 
@@ -77,25 +47,10 @@ func (t taskService) GetTask(ctx context.Context, id string) (*models.Task, *mod
 		}
 	}
 
-	if task.UserId != activeUser {
-		return nil, &models.Error{
-			Code:    http.StatusUnauthorized,
-			Message: "unauthorized",
-		}
-	}
-
 	return task, nil
 }
 
 func (t taskService) UpdateTask(ctx context.Context, task *models.UpdateTaskRequest) *models.Error {
-	activeUser, err := GetActiveUser(ctx)
-
-	if err != nil {
-		return &models.Error{
-			Code:    http.StatusUnauthorized,
-			Message: "unauthorized",
-		}
-	}
 
 	taskFound, err := t.taskRepo.GetById(task.Id)
 	if err != nil {
@@ -103,13 +58,6 @@ func (t taskService) UpdateTask(ctx context.Context, task *models.UpdateTaskRequ
 			Code:    http.StatusNotFound,
 			Message: "task does not exist",
 			Error:   err,
-		}
-	}
-
-	if taskFound.UserId != activeUser {
-		return &models.Error{
-			Code:    http.StatusUnauthorized,
-			Message: "unauthorized",
 		}
 	}
 
@@ -127,14 +75,6 @@ func (t taskService) UpdateTask(ctx context.Context, task *models.UpdateTaskRequ
 }
 
 func (t taskService) CompleteTask(ctx context.Context, id string) *models.Error {
-	activeUser, err := GetActiveUser(ctx)
-
-	if err != nil {
-		return &models.Error{
-			Code:    http.StatusUnauthorized,
-			Message: "unauthorized",
-		}
-	}
 
 	task, err := t.taskRepo.GetById(id)
 
@@ -146,14 +86,7 @@ func (t taskService) CompleteTask(ctx context.Context, id string) *models.Error 
 		}
 	}
 
-	if task.UserId != activeUser {
-		return &models.Error{
-			Code:    http.StatusUnauthorized,
-			Message: "unauthorized",
-		}
-	}
-
-	if err := t.taskRepo.CompleteTask(id); err != nil {
+	if err := t.taskRepo.CompleteTask(task.ID); err != nil {
 		return &models.Error{
 			Code:    http.StatusInternalServerError,
 			Message: "could not complete task",
@@ -166,12 +99,4 @@ func (t taskService) CompleteTask(ctx context.Context, id string) *models.Error 
 	// etc
 
 	return nil
-}
-
-func GetActiveUser(ctx context.Context) (string, error) {
-	activeUser := ctx.Value(middlewares.User).(string)
-	if activeUser == "" {
-		return "", errors.New("Unauthorized")
-	}
-	return activeUser, nil
 }

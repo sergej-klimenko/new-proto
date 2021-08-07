@@ -1,13 +1,11 @@
 package models
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
-
 type Task struct {
-	ID          primitive.ObjectID `bson:"_id" json:"id"`
-	UserId      string             `json:"userId"`
-	Title       string             `json:"title"`
-	Description string             `json:"description"`
-	Complete    bool               `json:"complete"`
+	ID          int    `json:"id"`
+	UserId      string `json:"userId"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Complete    bool   `json:"complete"`
 }
 
 type CreateTaskRequest struct {
@@ -20,7 +18,7 @@ func (r *CreateTaskRequest) Validate() *Error {
 }
 
 type CreateTaskResponse struct {
-	Id string `json:"id"`
+	Id int `json:"id"`
 }
 
 type UpdateTaskRequest struct {

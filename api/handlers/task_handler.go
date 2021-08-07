@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"cloud-native/api/middlewares"
 	"cloud-native/api/models"
 	"cloud-native/api/services"
 	"cloud-native/api/utils"
@@ -20,7 +19,6 @@ func NewTaskHandler(taskSvc services.TaskService) http.Handler {
 	}
 
 	r := chi.NewRouter()
-	r.Use(middlewares.AuthMiddleware)
 	r.Post("/", handler.createTask)
 	r.Get("/{id}", handler.getTask)
 	r.Put("/{id}", handler.updateTask)
@@ -35,12 +33,7 @@ func (h taskHandler) createTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newTaskId, err := h.TaskSvc.CreateTask(r.Context(), task)
-
-	if err != nil {
-		utils.WriteErrorResponse(w, err)
-		return
-	}
+	newTaskId := h.TaskSvc.CreateTask(r.Context(), task)
 
 	utils.WriteResponse(w, &models.CreateTaskResponse{Id: newTaskId}, 200)
 }
