@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	models "cloud-native/api/models"
+	models "new-proto/api/models"
 
 	mock "github.com/stretchr/testify/mock"
 )

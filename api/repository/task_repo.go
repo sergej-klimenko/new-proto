@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"cloud-native/api/models"
+	"new-proto/api/models"
 
 	"github.com/pkg/errors"
 )

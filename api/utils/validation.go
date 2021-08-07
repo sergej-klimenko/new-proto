@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"cloud-native/api/models"
 	"encoding/json"
 	"net/http"
+	"new-proto/api/models"
 
 	"github.com/pkg/errors"
 )

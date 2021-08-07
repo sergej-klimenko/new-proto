@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"cloud-native/api/models"
-	"cloud-native/api/services"
-	"cloud-native/api/utils"
 	"net/http"
+	"new-proto/api/models"
+	"new-proto/api/services"
+	"new-proto/api/utils"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"

@@ -9,11 +9,10 @@ import (
 )
 
 type Settings struct {
-	MongoHost string `mapstructure:"MONGO_HOST"`
-	MongoName string `mapstructure:"MONGO_NAME"`
-	MongoUser string `mapstructure:"MONGO_USER"`
-	MongoPass string `mapstructure:"MONGO_PASS"`
+	Environment string `mapstructure:"Environment"`
 }
+
+var ErrInvalidConfiguration = errors.New("invalid configuration")
 
 func LoadConfiguration() error {
 	s := &Settings{}
@@ -28,6 +27,10 @@ func LoadConfiguration() error {
 
 	if err := viper.Unmarshal(&s); err != nil {
 		return errors.Wrap(err, "error unmarshaling settings file")
+	}
+
+	if s.Environment == "" {
+		return ErrInvalidConfiguration
 	}
 
 	return nil

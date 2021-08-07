@@ -1,10 +1,10 @@
 package services
 
 import (
-	"cloud-native/api/models"
-	"cloud-native/api/repository"
 	"context"
 	"net/http"
+	"new-proto/api/models"
+	"new-proto/api/repository"
 	"strings"
 )
 

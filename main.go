@@ -1,15 +1,15 @@
 package main
 
 import (
-	"cloud-native/api"
 	"fmt"
 	"log"
+	"new-proto/api"
 )
 
 func main() {
 
 	if err := api.LoadConfiguration(); err != nil {
-		log.Fatalf("%+v\n", err)
+		log.Fatalf("\n%+v\n", err)
 	}
 
 	svr := api.New()

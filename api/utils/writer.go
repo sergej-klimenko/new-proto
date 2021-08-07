@@ -1,10 +1,10 @@
 package utils
 
 import (
-	"cloud-native/api/models"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"new-proto/api/models"
 )
 
 func WriteResponse(w http.ResponseWriter, res interface{}, status int) {

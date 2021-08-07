@@ -1,4 +1,4 @@
-module cloud-native
+module new-proto
 
 go 1.16
 

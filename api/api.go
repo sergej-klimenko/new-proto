@@ -1,10 +1,10 @@
 package api
 
 import (
-	"cloud-native/api/handlers"
-	"cloud-native/api/repository"
-	"cloud-native/api/services"
 	"net/http"
+	"new-proto/api/handlers"
+	"new-proto/api/repository"
+	"new-proto/api/services"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"

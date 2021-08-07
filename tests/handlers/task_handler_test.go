@@ -1,10 +1,10 @@
 package handlers_test
 
 import (
-	"cloud-native/api/handlers"
-	"cloud-native/api/services/mocks"
 	"net/http"
 	"net/http/httptest"
+	"new-proto/api/handlers"
+	"new-proto/api/services/mocks"
 	"strings"
 	"testing"
 
@@ -28,16 +28,5 @@ func TestCreateTask_BadRequestBody(t *testing.T) {
 
 	assert.Equal(t, http.StatusBadRequest, rec.Code)
 	assert.Contains(t, rec.Body.String(), "invalid request body")
-
-}
-
-func TestCreateTask_MissingUserIdHeader(t *testing.T) {
-	req := httptest.NewRequest("POST", "/", strings.NewReader(""))
-	rec := httptest.NewRecorder()
-
-	taskHandler.ServeHTTP(rec, req)
-
-	assert.Equal(t, http.StatusUnauthorized, rec.Code)
-	assert.Contains(t, rec.Body.String(), "Unauthorized")
 
 }
