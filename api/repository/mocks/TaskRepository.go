@@ -41,6 +41,22 @@ func (_m *TaskRepository) Create(task models.Task) int {
 	return r0
 }
 
+// GetAll provides a mock function with given fields:
+func (_m *TaskRepository) GetAll() []models.Task {
+	ret := _m.Called()
+
+	var r0 []models.Task
+	if rf, ok := ret.Get(0).(func() []models.Task); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]models.Task)
+		}
+	}
+
+	return r0
+}
+
 // GetById provides a mock function with given fields: id
 func (_m *TaskRepository) GetById(id int) (models.Task, error) {
 	ret := _m.Called(id)

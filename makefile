@@ -1,5 +1,5 @@
 run:
-	ENVIRONMENT=docker go run main.go
+	go run main.go
 
 build-local:
 	docker build -f build/development/Dockerfile  -t new-proto-dev:latest .
