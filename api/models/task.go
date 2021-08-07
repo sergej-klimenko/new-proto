@@ -22,7 +22,7 @@ type CreateTaskResponse struct {
 }
 
 type UpdateTaskRequest struct {
-	Id          string `json:"id,omitempty"`
+	Id          int    `json:"id,omitempty"`
 	UserId      string `json:"userId,omitempty"`
 	Title       string `json:"title,omitempty"`
 	Description string `json:"description,omitempty"`

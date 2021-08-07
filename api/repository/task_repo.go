@@ -25,14 +25,14 @@ func NewTaskRepository(mongo *mongo.Client) TaskRepository {
 	return &taskRepository{}
 }
 
-func (t taskRepository) Create(task models.Task) int {
+func (t *taskRepository) Create(task models.Task) int {
 	t.idCounter++
 	task.ID = t.idCounter
 	t.taskCollection = append(t.taskCollection, task)
 	return t.idCounter
 }
 
-func (t taskRepository) GetById(id int) (models.Task, error) {
+func (t *taskRepository) GetById(id int) (models.Task, error) {
 	for _, v := range t.taskCollection {
 		if v.ID == id {
 			return v, nil
@@ -41,7 +41,7 @@ func (t taskRepository) GetById(id int) (models.Task, error) {
 	return models.Task{}, ErrTaskNotFound
 }
 
-func (t taskRepository) UpdateTask(task models.Task) error {
+func (t *taskRepository) UpdateTask(task models.Task) error {
 	for i, v := range t.taskCollection {
 		if v.ID == task.ID {
 			t.taskCollection[i] = task
@@ -51,7 +51,7 @@ func (t taskRepository) UpdateTask(task models.Task) error {
 	return ErrTaskNotFound
 }
 
-func (t taskRepository) CompleteTask(id int) error {
+func (t *taskRepository) CompleteTask(id int) error {
 	for i, v := range t.taskCollection {
 		if v.ID == id {
 			t.taskCollection[i].Complete = true
