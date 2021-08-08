@@ -63,9 +63,12 @@ data "aws_iam_policy_document" "codebuild" {
   }
 
   statement {
-    sid       = "AllowECSDescribeTaskDefinition"
-    effect    = "Allow"
-    actions   = ["ecs:DescribeTaskDefinition"]
+    sid    = "AllowECSUpdate"
+    effect = "Allow"
+    actions = [
+      "ecs:DescribeTaskDefinition",
+      "ecs:UpdateService"
+    ]
     resources = ["*"]
   }
 
