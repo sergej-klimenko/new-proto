@@ -15,33 +15,12 @@ data "aws_iam_policy_document" "assume_by_codebuild" {
   }
 }
 
-resource "aws_s3_bucket" "main" {
-  bucket        = "${var.name}-${var.environment}-codepipeline"
-  force_destroy = true
-}
-
 resource "aws_iam_role" "codebuild" {
   name               = "${var.name}-${var.environment}-codebuild-role"
   assume_role_policy = data.aws_iam_policy_document.assume_by_codebuild.json
 }
 
 data "aws_iam_policy_document" "codebuild" {
-  statement {
-    sid    = "AllowS3"
-    effect = "Allow"
-
-    actions = [
-      "s3:GetObject",
-      "s3:ListBucket",
-      "s3:PutObject",
-    ]
-
-    resources = [
-      "${aws_s3_bucket.main.arn}",
-      "${aws_s3_bucket.main.arn}/*",
-    ]
-  }
-
   statement {
     sid       = "AllowECRAuth"
     effect    = "Allow"
