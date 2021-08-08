@@ -179,10 +179,10 @@ resource "aws_appautoscaling_policy" "ecs_policy_cpu" {
 }
 
 output "ecs_cluster_name" {
-  value = aws_ecs_service.main.name
+  value = aws_ecs_cluster.main.id
 }
 
 output "ecs_service_name" {
-  value = aws_ecs_service.main.name
+  value = aws_ecs_service.main.id
 }
 

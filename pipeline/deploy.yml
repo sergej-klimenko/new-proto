@@ -12,3 +12,4 @@ phases:
       - docker build -f build/development/Dockerfile -t mgt-staging .
       - docker tag $ECR_NAME:latest $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:latest
+      - aws ecs update-service --service $ECS_SERVICE_NAME --cluster $ECS_CLUSTER_NAME --force-new-deployment

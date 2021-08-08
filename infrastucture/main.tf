@@ -23,7 +23,7 @@ module "vpc" {
 }
 
 module "security_groups" {
-  source         = "./sg"
+  source         = "./security-groups"
   name           = var.name
   vpc_id         = module.vpc.id
   environment    = var.environment
@@ -72,4 +72,6 @@ module "codebuild" {
   github_owner       = var.github_owner
   github_repo        = var.github_repo
   github_token       = var.github_token
+  ecs_service_name   = module.ecs.ecs_service_name
+  ecs_cluster_name   = module.ecs.ecs_cluster_name
 }

@@ -22,6 +22,10 @@ func New() *http.Server {
 	//services
 	taskSvc := services.NewTaskService(taskRepo)
 
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("hello!"))
+	})
+
 	// routes
 	r.Route("/api/v1", func(v1 chi.Router) {
 		v1.Mount("/tasks", handlers.NewTaskHandler(taskSvc))

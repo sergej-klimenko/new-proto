@@ -120,6 +120,16 @@ resource "aws_codebuild_project" "main" {
       name  = "ACCOUNT_ID"
       value = data.aws_caller_identity.current.account_id
     }
+
+    environment_variable {
+      name  = "ECS_CLUSTER_NAME"
+      value = var.ecs_cluster_name
+    }
+
+    environment_variable {
+      name  = "ECS_SERVICE_NAME"
+      value = var.ecs_service_name
+    }
   }
 
   source {
