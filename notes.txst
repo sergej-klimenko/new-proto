@@ -1,6 +1,0 @@
-aws ecs update-service --service <service-name> --cluster default-cluster --force-new-deployment
-
-Follow the steps in the GitHub documentation to create a new (OAuth 2) token with the following scopes (permissions): admin:repo_hook and repo. If you already have a token with these permissions, you can use that. You can find a list of all your personal access tokens in https://github.com/settings/tokens.
-
-
-golang ubuntu for modules
