@@ -58,16 +58,17 @@ module "ecs" {
   container_cpu               = var.container_cpu
   container_memory            = var.container_memory
   service_desired_count       = var.service_desired_count
-  aws_ecr_repository_url      = module.ecr.aws_ecr_repository_url
+  aws_ecr_repository_url      = module.ecr.ecr_repository_url
 }
 
 module "code-pipline" {
-  source                 = "./deploy"
-  name                   = var.name
-  environment            = var.environment
-  aws_ecr_repository_url = module.ecr.aws_ecr_repository_url
-  github_branch          = var.github_branch
-  github_owner           = var.github_owner
-  github_repo            = var.github_repo
-  github_token           = var.github_token
+  source             = "./deploy"
+  name               = var.name
+  environment        = var.environment
+  ecr_repository_url = module.ecr.ecr_repository_url
+  ecr_repository_arn = module.ecr.ecr_repository_arn
+  github_branch      = var.github_branch
+  github_owner       = var.github_owner
+  github_repo        = var.github_repo
+  github_token       = var.github_token
 }

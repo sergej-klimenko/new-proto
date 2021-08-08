@@ -1,3 +1,4 @@
 .env
 coverage.out
-.terraform/
+.terraform*
+terraform.tfstate

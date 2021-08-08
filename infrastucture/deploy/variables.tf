@@ -7,8 +7,12 @@ variable "environment" {
   description = "the environment name (dev, staging, prod)"
 }
 
-variable "aws_ecr_repository_url" {
+variable "ecr_repository_url" {
   description = "docker repository url"
+}
+
+variable "ecr_repository_arn" {
+  description = "ecr arn"
 }
 
 variable "github_token" {
@@ -23,14 +27,3 @@ variable "github_repo" {
 variable "github_branch" {
   description = "github branch for code pipeline"
 }
-
-variable "aws_lb_listener_arns" {
-  description = "docker repository url"
-}
-variable "ecs_cluster_name" {
-  description = "ecs cluster name"
-}
-variable "ecs_service_name" {
-  description = "ecs service name"
-}
-
