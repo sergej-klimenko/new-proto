@@ -9,3 +9,6 @@ phases:
       - Running unit tests...
       - cd tests
       - go test -v
+  post_build:
+    commands:
+      - echo Deploying...
