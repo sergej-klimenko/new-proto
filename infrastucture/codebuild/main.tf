@@ -1,7 +1,6 @@
-resource "aws_s3_bucket" "main" {
-  bucket        = "${var.name}-${var.environment}-codepipeline"
-  force_destroy = true
-}
+
+
+data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "assume_by_codebuild" {
   statement {
@@ -14,6 +13,11 @@ data "aws_iam_policy_document" "assume_by_codebuild" {
       identifiers = ["codebuild.amazonaws.com"]
     }
   }
+}
+
+resource "aws_s3_bucket" "main" {
+  bucket        = "${var.name}-${var.environment}-codepipeline"
+  force_destroy = true
 }
 
 resource "aws_iam_role" "codebuild" {
@@ -110,6 +114,11 @@ resource "aws_codebuild_project" "main" {
     environment_variable {
       name  = "REGION"
       value = var.region
+    }
+
+    environment_variable {
+      name  = "ACCOUNT_ID"
+      value = data.aws_caller_identity.current.account_id
     }
   }
 

@@ -5,7 +5,7 @@ phases:
       - go mod download
   pre_build:
     commands:
-      - $(aws ecr get-login --no-include-email --region $REGION)
+      - aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com
       - go test -coverpkg ./... ./... | { grep -v 'no test files'; true; }
   build:
     commands:
