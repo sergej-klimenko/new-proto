@@ -23,7 +23,7 @@ func New() *http.Server {
 	taskSvc := services.NewTaskService(taskRepo)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("goodbye!"))
+		w.Write([]byte("hello!"))
 	})
 
 	// routes
