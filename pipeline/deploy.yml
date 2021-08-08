@@ -5,6 +5,7 @@ phases:
       - go mod download
   pre_build:
     commands:
+      - $(aws ecr get-login --no-include-email --region $REGION)
       - go test -coverpkg ./... ./... | { grep -v 'no test files'; true; }
   build:
     commands:

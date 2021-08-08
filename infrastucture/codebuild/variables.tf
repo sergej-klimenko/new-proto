@@ -7,6 +7,10 @@ variable "environment" {
   description = "the environment name (dev, staging, prod)"
 }
 
+variable "region" {
+  description = "AWS region"
+}
+
 variable "ecr_repository_url" {
   description = "docker repository url"
 }

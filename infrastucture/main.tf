@@ -65,6 +65,7 @@ module "codebuild" {
   source             = "./codebuild"
   name               = var.name
   environment        = var.environment
+  region             = var.aws-region
   ecr_repository_url = module.ecr.ecr_repository_url
   ecr_repository_arn = module.ecr.ecr_repository_arn
   github_branch      = var.github_branch

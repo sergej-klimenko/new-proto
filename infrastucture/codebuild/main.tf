@@ -106,6 +106,11 @@ resource "aws_codebuild_project" "main" {
       name  = "ECR_NAME"
       value = "${var.name}-${var.environment}"
     }
+
+    environment_variable {
+      name  = "REGION"
+      value = var.region
+    }
   }
 
   source {
