@@ -22,8 +22,8 @@ module "vpc" {
   environment        = var.environment
 }
 
-module "security_groups" {
-  source         = "./security-groups"
+module "sg" {
+  source         = "./sg"
   name           = var.name
   vpc_id         = module.vpc.id
   environment    = var.environment
@@ -36,7 +36,7 @@ module "alb" {
   vpc_id              = module.vpc.id
   subnets             = module.vpc.public_subnets
   environment         = var.environment
-  alb_security_groups = [module.security_groups.alb]
+  alb_security_groups = [module.sg.alb]
   health_check_path   = var.health_check_path
 }
 
@@ -53,7 +53,7 @@ module "ecs" {
   region                      = var.aws-region
   subnets                     = module.vpc.private_subnets
   aws_alb_target_group_arn    = module.alb.aws_alb_target_group_arn
-  ecs_service_security_groups = [module.security_groups.ecs-task-sg]
+  ecs_service_security_groups = [module.sg.ecs-task-sg]
   container_port              = var.container_port
   container_cpu               = var.container_cpu
   container_memory            = var.container_memory
