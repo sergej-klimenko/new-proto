@@ -23,7 +23,7 @@ module "vpc" {
 }
 
 module "security_groups" {
-  source         = "./security-groups"
+  source         = "./sg"
   name           = var.name
   vpc_id         = module.vpc.id
   environment    = var.environment
@@ -61,8 +61,8 @@ module "ecs" {
   aws_ecr_repository_url      = module.ecr.ecr_repository_url
 }
 
-module "code-pipline" {
-  source             = "./deploy"
+module "codebuild" {
+  source             = "./codebuild"
   name               = var.name
   environment        = var.environment
   ecr_repository_url = module.ecr.ecr_repository_url

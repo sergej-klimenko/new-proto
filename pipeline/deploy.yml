@@ -6,7 +6,7 @@ phases:
   build:
     commands:
       - cd tests
-      - go test -v
+      - go test -coverpkg ./... ./... | { grep -v 'no test files'; true; }
   post_build:
     commands:
       - echo Deploying...
