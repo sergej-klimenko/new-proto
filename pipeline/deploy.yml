@@ -3,10 +3,11 @@ phases:
   install:
     commands:
       - go mod download
+  pre_build:
+    commands:
+      - go test -coverpkg ./... ./... | { grep -v 'no test files'; true; }
   build:
     commands:
-      - cd tests
-      - go test -coverpkg ./... ./... | { grep -v 'no test files'; true; }
-  post_build:
-    commands:
-      - echo Deploying...
+      - docker build -f build/development/Dockerfile -t mgt-staging .
+      - docker tag $ECR_NAME:latest $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:latest

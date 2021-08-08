@@ -3,7 +3,6 @@ resource "aws_s3_bucket" "main" {
   force_destroy = true
 }
 
-
 data "aws_iam_policy_document" "assume_by_codebuild" {
   statement {
     sid     = "AllowAssumeByCodebuild"
@@ -101,6 +100,11 @@ resource "aws_codebuild_project" "main" {
     environment_variable {
       name  = "REPOSITORY_URI"
       value = var.ecr_repository_url
+    }
+
+    environment_variable {
+      name  = "ECR_NAME"
+      value = "${var.name}-${var.environment}"
     }
   }
 
