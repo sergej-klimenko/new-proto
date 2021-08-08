@@ -1,5 +1,5 @@
 resource "aws_alb" "application_load_balancer" {
-  name               = "${var.service}-${var.environment}-${var.environment}-alb"
+  name               = "${var.service}-${var.environment}-alb"
   internal           = false
   load_balancer_type = "application"
   subnets            = aws_subnet.public.*.id
@@ -29,6 +29,7 @@ resource "aws_security_group" "load_balancer_security_group" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
+
   tags = {
     Name        = "${var.service}-${var.environment}-sg"
     Environment = var.environment
@@ -36,8 +37,8 @@ resource "aws_security_group" "load_balancer_security_group" {
 }
 
 resource "aws_lb_target_group" "target_group" {
-  name        = "${var.service}-${var.environment}-${var.environment}-tg"
-  port        = 80
+  name        = "${var.service}-${var.environment}-tg"
+  port        = var.port
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = aws_vpc.vpc.id
@@ -48,7 +49,7 @@ resource "aws_lb_target_group" "target_group" {
     protocol            = "HTTP"
     matcher             = "200"
     timeout             = "3"
-    path                = "/v1/healthcheck"
+    path                = "/api/v1/env/check"
     unhealthy_threshold = "2"
   }
 
@@ -68,18 +69,4 @@ resource "aws_lb_listener" "listener" {
     target_group_arn = aws_lb_target_group.target_group.id
   }
 
-}
-
-resource "aws_lb_listener" "listener-https" {
-  load_balancer_arn = aws_alb.application_load_balancer.id
-  port              = "443"
-  protocol          = "HTTPS"
-
-  ssl_policy      = "ELBSecurityPolicy-2016-08"
-  certificate_arn = "<certificate-arn>"
-
-  default_action {
-    target_group_arn = aws_lb_target_group.target_group.id
-    type             = "forward"
-  }
 }

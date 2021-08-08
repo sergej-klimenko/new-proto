@@ -38,12 +38,12 @@ variable "availability_zones" {
 
 variable "task_cpu" {
   description = "Task Definition CPU"
-  default     = 128
+  default     = 256
 }
 
 variable "task_memory" {
   description = "Task Definition Memory"
-  default     = 256
+  default     = 512
 }
 variable "port" {
   description = "Service port"
