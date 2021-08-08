@@ -68,12 +68,8 @@ resource "aws_ecs_task_definition" "main" {
       essential = true
       environment = [
         {
-          name  = "PORT",
-          value = "8888"
-        },
-        {
           name  = "ENVIRONMENT",
-          value = "docker"
+          value = var.environment
         }
       ]
       portMappings = [{
