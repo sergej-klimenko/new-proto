@@ -85,7 +85,30 @@ resource "aws_ecs_task_definition" "main" {
           awslogs-region        = var.region
         }
       }
-    }
+    },
+    {
+    name: "xray-sidecar",
+    mountPoints: [],
+    image: "amazon/aws-xray-daemon:1",
+    cpu: 0,
+    portMappings: [
+      {
+        protocol: "udp",
+        containerPort: 2000,
+        hostPort: 2000
+      }
+    ],
+    logConfiguration: {
+      logDriver: "awslogs",
+      options: {
+        awslogs-region: var.region,
+        awslogs-stream-prefix: "ecs",
+        awslogs-group: aws_cloudwatch_log_group.main.name
+      }
+    },
+    essential: true,
+    volumesFrom: []
+   }
   ])
   tags = {
     Name        = "${var.name}-task-${var.environment}"

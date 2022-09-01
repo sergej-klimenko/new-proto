@@ -6,6 +6,7 @@ import (
 	"new-proto/api/repository"
 	"new-proto/api/services"
 
+	"github.com/aws/aws-xray-sdk-go/xray"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -14,6 +15,7 @@ func New() *http.Server {
 	r := chi.NewRouter()
 
 	// global middlware
+	r.Use(Tracer)
 	r.Use(middleware.Recoverer)
 
 	// repositories
@@ -37,4 +39,8 @@ func New() *http.Server {
 		Addr:    ":8888",
 	}
 
+}
+
+func Tracer(next http.Handler) http.Handler {
+	return xray.Handler(xray.NewFixedSegmentNamer("mgtApp"), next)
 }
