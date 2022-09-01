@@ -1,7 +1,7 @@
 name               = "mgt"
 aws-region         = "us-east-1"
 aws-profile        = "staging"
-environment        = "staging"
+environment        = "prod"
 availability_zones = ["us-east-1a", "us-east-1b"]
 private_subnets    = ["10.0.50.0/24", "10.0.51.0/24"]
 public_subnets     = ["10.0.0.0/24", "10.0.1.0/24"]
@@ -12,4 +12,4 @@ health_check_path  = "/"
 github_branch      = "main"
 github_owner       = "pkorch"
 github_repo        = "new-proto"
-github_token       = "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"
+github_token       = "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"
