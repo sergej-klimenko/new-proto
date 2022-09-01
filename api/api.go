@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 	"new-proto/api/handlers"
 	"new-proto/api/repository"
@@ -25,7 +24,6 @@ func New() *http.Server {
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello!"))
-		fmt.Printf("http request from:%v \n", r.RemoteAddr)
 	})
 
 	// routes
